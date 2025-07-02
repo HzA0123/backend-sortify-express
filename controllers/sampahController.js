@@ -2,7 +2,7 @@
 const axios = require("axios");
 const FormData = require("form-data");
 const { Sampah } = require("../models");
-const uploadToGCS = require("../utils/gcsUploader");
+const uploadToSupabase = require("../utils/supabaseUploader");
 
 const FLASK_API_URL = "https://notnith-deteksi-sampah-sprtofy.hf.space/predict";
 
@@ -15,10 +15,10 @@ const uploadAndDetect = async (req, res) => {
       });
     }
 
-    // Upload ke Google Cloud Storage
-    const { publicUrl, filename } = await uploadToGCS(req.file);
+    // Upload ke Supabase Storage
+    const { publicUrl, filename } = await uploadToSupabase(req.file);
 
-    // Ambil gambar dari GCS untuk dikirim ke Flask sebagai stream
+    // Ambil gambar dari Supabase untuk dikirim ke Hugging Face sebagai stream
     const imageResponse = await axios.get(publicUrl, {
       responseType: "stream",
     });
@@ -26,7 +26,7 @@ const uploadAndDetect = async (req, res) => {
     const formData = new FormData();
     formData.append("image", imageResponse.data, filename);
 
-    // Kirim ke Flask API
+    // Kirim ke Hugging Face API
     const response = await axios.post(FLASK_API_URL, formData, {
       headers: {
         ...formData.getHeaders(),
