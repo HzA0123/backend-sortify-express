@@ -12,10 +12,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://sortify-project.netlify.app", // Ganti dengan URL Netlify kamu
-    ],
+    origin: ["http://localhost:5173", "https://sortify-project.netlify.app"],
     credentials: true,
   })
 );
