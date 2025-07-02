@@ -5,6 +5,7 @@ const sampahRoutes = require("./routers/sampahRoutes");
 const authRoutes = require("./routers/authRoutes");
 const userRoutes = require("./routers/userRoutes");
 const edukasiRoutes = require("./routers/edukasiRoutes");
+const { sequelize } = require("./models");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,6 +32,16 @@ app.use("/api/edukasi", edukasiRoutes);
 app.get("/", (req, res) => {
   res.send("Backend Sortify Express API is running!");
 });
+
+// Jalankan migration otomatis saat start (hanya jika belum ada terminal Railway)
+sequelize
+  .sync()
+  .then(() => {
+    console.log("Database synchronized (sequelize.sync)");
+  })
+  .catch((err) => {
+    console.error("Gagal sync database:", err);
+  });
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
